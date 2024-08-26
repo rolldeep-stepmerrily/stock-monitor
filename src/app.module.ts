@@ -1,7 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
-import { HttpModule } from '@nestjs/axios';
 
 import { ConfigProviderModule } from './common/config-provider/config-provider.module';
 import { HttpLoggerMiddleware } from './common/middlewares';
@@ -22,7 +21,6 @@ import { StocksModule } from './stocks/stocks.module';
     }),
     ConfigProviderModule,
     StocksModule,
-    HttpModule,
   ],
 })
 export class AppModule implements NestModule {
