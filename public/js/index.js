@@ -4,14 +4,11 @@ let chart;
 
 const eventSource = new EventSource('http://localhost:3068/stocks/stream', { withCredentials: true });
 
-console.log('eventSource', eventSource);
-
-eventSource.onmessage = function (event) {
-  console.log('event', event);
-  const data = JSON.parse(event.data);
+eventSource.addEventListener('stockUpdate', (e) => {
+  const data = JSON.parse(e.data);
   updateStockList(data);
   updateChart(data);
-};
+});
 
 const updateStockList = (data) => {
   stockList.innerHTML = '';

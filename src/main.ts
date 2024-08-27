@@ -40,7 +40,16 @@ async function bootstrap() {
   });
 
   if (isProduction) {
-    app.use(helmet());
+    app.use(
+      helmet({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", 'https://cdn.cloudflare.com', "'unsafe-inline'"],
+          },
+        },
+      }),
+    );
   }
 
   await app.listen(configService.getOrThrow<number>('PORT'));

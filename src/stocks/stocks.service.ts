@@ -42,11 +42,7 @@ export class StocksService {
   }
 
   stockUpdates(): Observable<{ data: Record<string, IStock> }> {
-    const a = interval(10000).pipe(switchMap(() => this.fetchStocksData()));
-
-    console.log(a);
-
-    return a;
+    return interval(3000).pipe(switchMap(() => this.fetchStocksData()));
   }
 
   fetchStocksData(): Observable<{ data: Record<string, IStock> }> {
@@ -68,7 +64,7 @@ export class StocksService {
   fetchStockData(stockCode: string): Observable<IStock> {
     const url = `https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/quotations/inquire-price?FID_COND_MRKT_DIV_CODE=J&FID_INPUT_ISCD=${stockCode}`;
 
-    const response = this.httpService
+    return this.httpService
       .get<{ output: any }>(url, {
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +77,6 @@ export class StocksService {
       .pipe(
         map((response) => {
           const data = response.data.output;
-          console.log(data);
           return {
             symbol: stockCode,
             name: this.mapStockName(stockCode),
@@ -91,8 +86,6 @@ export class StocksService {
           };
         }),
       );
-
-    return response;
   }
 
   mapStockName(stockCode: string): string {

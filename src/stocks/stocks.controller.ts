@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Headers, Inject, Sse } from '@nestjs/common';
+import { Controller, Inject, Sse } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
