@@ -1,26 +1,27 @@
-import { Controller, Sse } from '@nestjs/common';
+import { BadRequestException, Controller, Headers, Inject, Sse } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { StocksService } from './stocks.service';
-import { ISse } from './stocks.interface';
 
 @Controller('stocks')
 export class StocksController {
-  constructor(private readonly stocksService: StocksService) {}
+  constructor(
+    private readonly stocksService: StocksService,
+    @Inject('SERVER_URL') private readonly SERVER_URL: string,
+  ) {}
 
   @Sse('stream')
-  streamStocks(): Observable<ISse> {
-    const response = this.stocksService.stockUpdates().pipe(
-      map((update) => ({
-        data: JSON.stringify(update.data),
-        id: Date.now().toString(),
-        type: 'stockUpdate',
-      })),
+  streamStocks(): Observable<MessageEvent> {
+    return this.stocksService.stockUpdates().pipe(
+      map((update) => {
+        const data = JSON.stringify(update.data);
+        return {
+          data,
+          id: Date.now().toString(),
+          type: 'stockUpdate',
+        } as unknown as MessageEvent;
+      }),
     );
-
-    console.log(response);
-
-    return response;
   }
 }

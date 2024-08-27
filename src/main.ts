@@ -18,6 +18,8 @@ async function bootstrap() {
 
   const isProduction = configService.getOrThrow<string>('NODE_ENV') === 'production';
 
+  const SERVER_URL = configService.getOrThrow<string>('SERVER_URL');
+
   app.useGlobalInterceptors(new TransformInterceptor());
 
   app.useGlobalPipes(
@@ -30,6 +32,12 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.enableCors({
+    origin: SERVER_URL,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
 
   if (isProduction) {
     app.use(helmet());
